@@ -17,7 +17,7 @@
             text-align: center;
         }
         h1 {
-            font-size: 2em;
+            font-size: 1.5em; /* Texte plus petit */
             margin-bottom: 20px;
         }
         input[type="text"] {
@@ -45,7 +45,11 @@
     </style>
 </head>
 <body>
-    <h1>Je parle sans bouche et j'entends sans oreilles. Je n'ai pas de corps, mais je m'anime grâce au vent. Que suis-je ?</h1>
+    <h1>
+        Je parle sans bouche et j'entends sans oreilles.<br>
+        Je n'ai pas de corps, mais je m'anime grâce au vent.<br>
+        Que suis-je ?
+    </h1>
     <input type="text" id="response" placeholder="Entrez votre réponse ici">
     <button onclick="checkResponse()">Vérifier</button>
     <div id="error-message" class="error" style="display: none;"></div>
@@ -54,6 +58,12 @@
     </div>
 
     <script>
+        document.getElementById('response').addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                checkResponse();
+            }
+        });
+
         function checkResponse() {
             const response = document.getElementById('response').value.toLowerCase();
             const errorMessage = document.getElementById('error-message');
