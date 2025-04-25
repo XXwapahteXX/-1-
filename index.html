@@ -1,9 +1,8 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Do You Like Apples?</title>
+    <title>Énigme</title>
     <style>
         body {
             background-color: black;
@@ -15,35 +14,62 @@
             align-items: center;
             height: 100vh;
             margin: 0;
+            text-align: center;
         }
-        #apple-img {
-            display: none;
+        h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 1em;
+            margin-bottom: 20px;
+        }
+        .error {
+            color: red;
+            font-size: 1.5em;
+            animation: flash 1s;
+        }
+        @keyframes flash {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        .image-container {
             margin-top: 20px;
-            max-width: 80%;
-            height: auto;
         }
-        input {
-            padding: 8px;
-            margin-top: 10px;
-            font-size: 16px;
+        .image-container img {
+            max-width: 100%;
+            height: auto;
         }
     </style>
 </head>
 <body>
-    <h1>Do you like apples?</h1>
-    <input type="text" id="answer" placeholder="Type your answer...">
-    <img id="apple-img" src="apple.png" alt="Apple Image">
+    <h1>Je parle sans bouche et j'entends sans oreilles. Je n'ai pas de corps, mais je m'anime grâce au vent. Que suis-je ?</h1>
+    <input type="text" id="response" placeholder="Entrez votre réponse ici">
+    <button onclick="checkResponse()">Vérifier</button>
+    <div id="error-message" class="error" style="display: none;"></div>
+    <div class="image-container" id="image-container" style="display: none;">
+        <img src="apple.png" alt="Image de réponse correcte">
+    </div>
+
     <script>
-        const input = document.getElementById('answer');
-        const img = document.getElementById('apple-img');
-        input.addEventListener('input', () => {
-            const val = input.value.toLowerCase();
-            if (val === 'yes' || val === 'oui') {
-                img.style.display = 'block';
+        function checkResponse() {
+            const response = document.getElementById('response').value.toLowerCase();
+            const errorMessage = document.getElementById('error-message');
+            const imageContainer = document.getElementById('image-container');
+
+            if (response === 'écho' || response === 'echo' || response === 'un echo' || response === 'un écho') {
+                errorMessage.style.display = 'none';
+                imageContainer.style.display = 'block';
             } else {
-                img.style.display = 'none';
+                errorMessage.textContent = 'Erreur';
+                errorMessage.style.display = 'block';
+                setTimeout(() => {
+                    errorMessage.style.display = 'none';
+                }, 1000);
             }
-        });
+        }
     </script>
 </body>
 </html>
