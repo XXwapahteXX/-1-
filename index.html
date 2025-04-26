@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Énigme</title>
+<style>
+    body {
+        background-color: black;
+        color: white;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        text-align: center;
+        height: 100vh;
+        overflow: hidden;
+    }
+    h1 {
+        font-size: 1.5em;
+        margin: 20px;
+    }
+    input[type="text"], textarea {
+        padding: 10px;
+        font-size: 1em;
+        margin-bottom: 20px;
+        width: 80%;
+        max-width: 400px;
+    }
+    button {
+        padding: 10px 20px;
+        font-size: 1em;
+        cursor: pointer;
+    }
+    .error {
+        color: red;
+        font-size: 1.2em;
+        animation: flash 1s;
+    }
+    @keyframes flash {
+        0% { opacity: 1; }
+        50% { opacity: 0.5; }
+        100% { opacity: 1; }
+    }
+    .hidden {
+        display: none;
+    }
+    .tabs {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+    .tab {
+        margin: 0 10px;
+        padding: 10px;
+        background-color: #222;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .tab-content {
+        margin-top: 20px;
+    }
+    #carte {
+        position: relative;
+        width: 100%;
+        height: calc(100vh - 60px);
+        overflow: hidden;
+    }
+    #map-img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+    #burned-spot {
+        position: absolute;
+        top: 300px;
+        left: 20px;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 10px;
+        border-radius: 10px;
+        z-index: 2;
+        width: 250px;
+    }
+    #burned-spot input {
+        margin-top: 5px;
+        width: 90%;
+    }
+    #forum {
+        margin-top: 20px;
+        text-align: left;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        background-color: #111;
+        padding: 20px;
+        border-radius: 10px;
+    }
+</style>
+</head>
+
+<body>
+
+<div id="initial-screen">
+    <h1>
+        Je parle sans bouche et j'entends sans oreilles.<br>
+        Je n'ai pas de corps, mais je m'anime grâce au vent.<br>
+        Que suis-je ?
+    </h1>
+    <input type="text" id="response" placeholder="Entrez votre réponse ici">
+    <button onclick="checkResponse()">Vérifier</button>
+    <div id="error-message" class="error hidden">Erreur</div>
+</div>
+
+<div id="main-content" class="hidden">
+    <div class="tabs" id="tabs">
+        <div class="tab" onclick="showTab('consigne')">Consigne</div>
+        <div class="tab" onclick="showTab('carte')">Carte</div>
+        <div class="tab" onclick="showTab('conseil')">Conseil</div>
+        <div class="tab hidden" id="secret-tab" onclick="showTab('secret')">Secret</div>
+    </div>
+
+    <div class="tab-content" id="consigne" style="display:none;">
+        <p>i. Vous trouverez à chaque localisation mentionnée sur le plan, un papier avec des symboles comme ceux-ci :</p>
+        <img src="clé.png" alt="Clé" style="max-width: 300px;"><br>
+        <p>iii. Dans chacun d'eux figure une lettre cryptée du mot final.</p>
+    </div>
+
+    <div class="tab-content" id="carte" style="display:none;">
+        <div id="burned-spot">
+            <div>Ensemble, que révèlent ces indices?<br><b>Écrivez ici votre mot final :</b></div>
+            <input type="text" id="burned-input" placeholder="Votre réponse">
+        </div>
+        <img id="map-img" src="map1-modified.png" alt="Carte">
+    </div>
+
+    <div class="tab-content" id="conseil" style="display:none;">
+        <p>Pas de conseil pour le moment.</p>
+    </div>
+
+    <div class="tab-content" id="secret" style="display:none;">
+        <p>Vous avez reçu le message encrypté, pas de chance. Décryptez-le, et obtenez la récompense.</p>
+
+        <div>
+            <p>Combien y avait-il de personne à la crémaillière de Julia?</p>
+            <input type="text" id="julia-question" placeholder="Votre réponse">
+            <button onclick="checkJulia()">Vérifier</button>
+            <div id="julia-answer" class="hidden">
+                <p>Type d'Alphabet: Alphabet Latin</p>
+                <p>Coordonnée de la clé : 45.55316415722526, -0.14191224458105708</p>
+            </div>
+        </div>
+
+        <div style="margin-top:20px;">
+            <p>Combien de fois Emma s'est-elle remise avec Alex ?</p>
+            <input type="text" id="emma-question" placeholder="Votre réponse">
+            <button onclick="checkEmma()">Vérifier</button>
+            <div id="emma-answer" class="hidden">
+                <a href="https://www.dcode.fr/chiffre-vigenere#q2" target="_blank" style="color:cyan;">Lien vers dcode.fr</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forum -->
+    <div id="forum">
+        <h2>Forum</h2>
+        <div id="messages" style="margin-bottom:10px; max-height: 200px; overflow-y: auto;"></div>
+        <input type="text" id="forum-input" placeholder="Écrire un message..." style="width:80%;">
+        <button onclick="postMessage()">Envoyer</button>
+    </div>
+
+</div>
+
+<!-- Popup Erreur -->
+<div id="error-popup" class="hidden" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    background-color: rgba(0,0,0,0.9); padding: 20px; border-radius: 10px; z-index: 9999; text-align: center;">
+    <img src="photo_ben.png" alt="Erreur" style="max-width: 200px;"><br>
+    <span style="font-size: 2em; color: red;">ERREUR</span>
+</div>
+
+<script>
+function checkResponse() {
+    const response = document.getElementById('response').value.toLowerCase().trim();
+    if (['écho', 'echo', 'un echo', 'un écho'].includes(response)) {
+        document.getElementById('initial-screen').classList.add('hidden');
+        document.getElementById('main-content').classList.remove('hidden');
+        showTab('consigne');
+    } else {
+        const errorMessage = document.getElementById('error-message');
+        errorMessage.classList.remove('hidden');
+        setTimeout(() => errorMessage.classList.add('hidden'), 1000);
+    }
+}
+
+function showTab(tabId) {
+    const tabs = document.querySelectorAll('.tab-content');
+    tabs.forEach(tab => tab.style.display = 'none');
+    document.getElementById(tabId).style.display = 'block';
+}
+
+function showError() {
+    const popup = document.getElementById('error-popup');
+    popup.classList.remove('hidden');
+    setTimeout(() => {
+        popup.classList.add('hidden');
+    }, 1500); // 1.5 secondes pour mieux voir l'image de Ben
+}
+
+// Carte
+document.getElementById('burned-input').addEventListener('keyup', function(event) {
+    if (event.key === 'Enter') {
+        checkBurnedInput();
+    }
+});
+
+function checkBurnedInput() {
+    const value = document.getElementById('burned-input').value.toLowerCase().trim();
+    if (value === 'club') {
+        document.getElementById('secret-tab').classList.remove('hidden');
+        showTab('secret');
+        addMessage('Un utilisateur a débloqué le menu secret !');
+    } else {
+        showError();
+    }
+}
+
+// Julia Question
+function checkJulia() {
+    const answer = document.getElementById('julia-question').value.trim();
+    if (answer === '1') {
+        document.getElementById('julia-answer').classList.remove('hidden');
+    } else {
+        showError();
+    }
+}
+
+// Emma Question
+function checkEmma() {
+    const answer = document.getElementById('emma-question').value.trim();
+    if (answer === '3') {
+        document.getElementById('emma-answer').classList.remove('hidden');
+    } else {
+        showError();
+    }
+}
+
+// Forum
+function postMessage() {
+    const input = document.getElementById('forum-input');
+    const message = input.value.trim();
+    if (message !== '') {
+        addMessage('Utilisateur: ' + message);
+        input.value = '';
+    }
+}
+
+function addMessage(text) {
+    const messagesDiv = document.getElementById('messages');
+    const newMessage = document.createElement('div');
+    newMessage.textContent = text;
+    messagesDiv.appendChild(newMessage);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+</script>
+
+</body>
+</html>
