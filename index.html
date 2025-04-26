@@ -99,6 +99,7 @@
         }
     </style>
 </head>
+
 <body>
     <div id="identification-screen">
         <h1>Entrez votre identifiant :</h1>
@@ -134,7 +135,7 @@
 
         <div class="tab-content" id="carte" style="display:none;">
             <div id="burned-spot">
-                <div>Ensemble, que révèlent ces indices?.<br><b>Écrivez ici votre mot final :</b></div>
+                <div>Ensemble, que révèlent ces indices ?<br><b>Écrivez ici votre mot final :</b></div>
                 <input type="text" id="burned-input" placeholder="Votre réponse">
             </div>
             <img id="map-img" src="map1-modified.png" alt="Carte">
@@ -153,14 +154,6 @@
 
         <div class="tab-content" id="secret" style="display:none;">
             <p>Vous avez reçu le message encrypté, pas de chance. Décryptez-le, et obtenez la récompense.</p>
-            <div>
-                <p>Vite trouve la clé, pour en apprendre plus sur la méthode d'encryptage :</p>
-                <input type="text" id="emma-question" placeholder="Combien de fois Emma s'est-elle REmise avec Alex ?">
-                <button onclick="checkEmma()">Vérifier</button>
-                <div id="emma-answer" class="hidden">
-                    <a href="https://www.dcode.fr/chiffre-vigenere#q2" target="_blank" style="color:cyan;">Lien vers dcode.fr</a>
-                </div>
-            </div>
 
             <div style="margin-top:20px;">
                 <p>Combien de personnes étaient présentes à la crémaillère de Julia ?</p>
@@ -169,6 +162,15 @@
                 <div id="julia-answer" class="hidden">
                     <p>Type d'Alphabet: Alphabet Latin</p>
                     <p>Coordonnée de la clé : 45.55316415722526, -0.14191224458105708</p>
+                </div>
+            </div>
+
+            <div style="margin-top:20px;">
+                <p>Combien de fois Emma s'est-elle remise avec Alex ?</p>
+                <input type="text" id="emma-question" placeholder="Votre réponse">
+                <button onclick="checkEmma()">Vérifier</button>
+                <div id="emma-answer" class="hidden">
+                    <a href="https://www.dcode.fr/chiffre-vigenere#q2" target="_blank" style="color:cyan;">Lien vers dcode.fr</a>
                 </div>
             </div>
         </div>
@@ -195,7 +197,7 @@
 
         function checkResponse() {
             const response = document.getElementById('response').value.toLowerCase().trim();
-            if (response === 'écho' || response === 'echo' || response === 'un echo' || response === 'un écho') {
+            if (['écho', 'echo', 'un echo', 'un écho'].includes(response)) {
                 updateForum(`<b>${username}</b> a répondu <i>"${response}"</i> à l'énigme "Écho".`);
                 document.getElementById('initial-screen').classList.add('hidden');
                 document.getElementById('main-content').classList.remove('hidden');
@@ -204,6 +206,7 @@
                 const errorMessage = document.getElementById('error-message');
                 errorMessage.classList.remove('hidden');
                 setTimeout(() => errorMessage.classList.add('hidden'), 1000);
+
                 // Affiche erreur image
                 const img = document.createElement('img');
                 img.src = 'ben.png';
@@ -214,6 +217,7 @@
                 img.style.width = '300px';
                 img.style.zIndex = '1000';
                 document.body.appendChild(img);
+
                 const erreurText = document.createElement('div');
                 erreurText.innerText = 'ERREUR';
                 erreurText.style.position = 'fixed';
@@ -224,6 +228,7 @@
                 erreurText.style.fontSize = '2em';
                 erreurText.style.zIndex = '1001';
                 document.body.appendChild(erreurText);
+
                 setTimeout(() => {
                     document.body.removeChild(img);
                     document.body.removeChild(erreurText);
@@ -252,18 +257,19 @@
             }
         }
 
+        function checkJulia() {
+            const answer = document.getElementById('julia-question').value.trim();
+            updateForum(`<b>${username}</b> a répondu <i>"${answer}"</i> à la question sur Julia.`);
+            if (answer === '1') {
+                document.getElementById('julia-answer').classList.remove('hidden');
+            }
+        }
+
         function checkEmma() {
             const answer = document.getElementById('emma-question').value.trim();
             updateForum(`<b>${username}</b> a répondu <i>"${answer}"</i> à la question sur Emma.`);
             if (answer === '3') {
                 document.getElementById('emma-answer').classList.remove('hidden');
-            }
-        }
-
-            const answer = document.getElementById('emma-question').value.trim();
-            updateForum(`<b>${username}</b> a répondu <i>"${answer}"</i> à la question sur Emma.`);
-            if (answer === '1') {
-                document.getElementById('julia-answer').classList.remove('hidden');
             }
         }
     </script>
