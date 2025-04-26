@@ -119,37 +119,39 @@
             <img id="map-img" src="map1.png" alt="Carte" style="background: red;">
         </div>
 
-        <div class="tab-content" id="conseil" style="display:none;">
-            <p>L'entraide vous sauvera</p>
-            <p>Ensemble les saints viendront à vous</p>
-            <img src="bellevignestyle.png" alt="Bellevigne" style="max-width: 300px;">
-        </div>
-
         <div class="tab-content" id="secret" style="display:none;">
-            <p>Vous avez reçu le message encrypté, pas de chance. Décryptez-le, et obtenez la récompense.</p>
+    <p>Vous avez reçu le message encrypté, pas de chance. Décryptez-le, et obtenez la récompense.</p>
 
-            <div>
-                <p>Vite trouve la clé, pour en apprendre plus sur la méthode d'encryptage :</p>
-                <input type="text" id="emma-question" placeholder="Combien de fois Emma s'est-elle remise avec Alex ?">
-                <button onclick="checkEmma()">Vérifier</button>
-                <div id="emma-answer" class="hidden">
-                    <a href="https://www.dcode.fr/chiffre-vigenere#q2" target="_blank" style="color:cyan;">Lien vers dcode.fr</a>
-                </div>
-            </div>
-
-            <div style="margin-top:20px;">
-                <p>Julia habite à ...</p>
-                <input type="text" id="julia-question" placeholder="Votre réponse">
-                <button onclick="checkJulia()">Vérifier</button>
-                <div id="julia-answer" class="hidden">
-                    <p>Type d'Alphabet: Alphabet Latin</p>
-                    <p>Coordonnée de la clé : 45.55316415722526, -0.14191224458105708</p>
-                </div>
-            </div>
+    <div>
+        <p>Quelle est la spécialité préférée de Julia ?</p>
+        <input type="text" id="julia-question" placeholder="Votre réponse">
+        <button onclick="checkJulia()">Vérifier</button>
+        <div id="julia-answer" class="hidden">
+            <p>Type d'Alphabet: Alphabet Latin</p>
+            <p>Coordonnée de la clé : 45.55316415722526, -0.14191224458105708</p>
         </div>
     </div>
 
+    <div style="margin-top:20px;">
+        <p>Combien d'enfants Emma a-t-elle ?</p>
+        <input type="text" id="emma-question" placeholder="Votre réponse">
+        <button onclick="checkEmma()">Vérifier</button>
+        <div id="emma-answer" class="hidden">
+            <a href="https://www.dcode.fr/chiffre-vigenere#q2" target="_blank" style="color:cyan;">Lien vers dcode.fr</a>
+        </div>
+    </div>
+
+    <!-- Zone pour afficher l'erreur -->
+    <div id="error-popup" class="hidden" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        background-color: rgba(0,0,0,0.9); padding: 20px; border-radius: 10px; z-index: 9999; text-align: center;">
+        <img src="ben.png" alt="Erreur" style="max-width: 200px;"><br>
+        <span style="font-size: 2em; color: red;">ERREUR</span>
+    </div>
+</div>
+
+
     <script>
+        
         function checkResponse() {
             const response = document.getElementById('response').value.toLowerCase().trim();
             if (response === 'écho' || response === 'echo' || response === 'un echo' || response === 'un écho') {
@@ -183,19 +185,32 @@
             }
         }
 
+        function showError() {
+            const popup = document.getElementById('error-popup');
+            popup.classList.remove('hidden');
+            setTimeout(() => {
+                popup.classList.add('hidden');
+            }, 150); // 0.15 seconde
+        }
+
         function checkEmma() {
             const answer = document.getElementById('emma-question').value.trim();
-            if (answer === '2') {
+            if (answer === '3') {
                 document.getElementById('emma-answer').classList.remove('hidden');
+            } else {
+                showError();
             }
         }
 
         function checkJulia() {
             const answer = document.getElementById('julia-question').value.toLowerCase().trim();
-            if (answer === 'cénon' || answer === 'cenon') {
+            if (answer === 'sushis' || answer === 'sushi') {
                 document.getElementById('julia-answer').classList.remove('hidden');
+            } else {
+                showError();
             }
         }
+
     </script>
 </body>
 </html>
