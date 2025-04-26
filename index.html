@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Énigme</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            text-align: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        h1 {
+            font-size: 1.5em;
+            margin: 20px;
+        }
+        input[type="text"], textarea {
+            padding: 10px;
+            font-size: 1em;
+            margin-bottom: 20px;
+            width: 80%;
+            max-width: 400px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+        .error {
+            color: red;
+            font-size: 1.2em;
+            animation: flash 1s;
+        }
+        @keyframes flash {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        .hidden {
+            display: none;
+        }
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .tab {
+            margin: 5px;
+            padding: 10px;
+            background-color: #222;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .tab-content {
+            margin-top: 20px;
+        }
+        #carte {
+            position: relative;
+            width: 100%;
+            height: calc(100vh - 60px);
+            overflow: hidden;
+        }
+        #map-img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        #burned-spot {
+            position: absolute;
+            top: 300px;
+            left: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            z-index: 2;
+            width: 250px;
+        }
+        #burned-spot input {
+            margin-top: 5px;
+            width: 90%;
+        }
+        #forum {
+            text-align: left;
+            padding: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            background-color: #111;
+            border-radius: 10px;
+            margin: 20px;
+        }
+        #forum p {
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div id="identification-screen">
+        <h1>Entrez votre identifiant :</h1>
+        <input type="text" id="username" placeholder="Votre nom ou pseudo">
+        <button onclick="startGame()">Commencer</button>
+    </div>
+
+    <div id="initial-screen" class="hidden">
+        <h1>
+            Je parle sans bouche et j'entends sans oreilles.<br>
+            Je n'ai pas de corps, mais je m'anime grâce au vent.<br>
+            Que suis-je ?
+        </h1>
+        <input type="text" id="response" placeholder="Entrez votre réponse ici">
+        <button onclick="checkResponse()">Vérifier</button>
+        <div id="error-message" class="error hidden">Erreur</div>
+    </div>
+
+    <div id="main-content" class="hidden">
+        <div class="tabs" id="tabs">
+            <div class="tab" onclick="showTab('consigne')">Consigne</div>
+            <div class="tab" onclick="showTab('carte')">Carte</div>
+            <div class="tab" onclick="showTab('conseil')">Conseil</div>
+            <div class="tab" onclick="showTab('forum')">Forum</div>
+            <div class="tab hidden" id="secret-tab" onclick="showTab('secret')">Secret</div>
+        </div>
+
+        <div class="tab-content" id="consigne" style="display:none;">
+            <p>i. Vous trouverez à chaque localisation mentionnée sur le plan, un papier avec des symboles comme ceux-ci :</p>
+            <img src="clé.png" alt="Clé" style="max-width: 300px;"><br>
+            <p>iii. Dans chacun d'eux figure une lettre cryptée du mot final.</p>
+        </div>
+
+        <div class="tab-content" id="carte" style="display:none;">
+            <div id="burned-spot">
+                <div>Ensemble, que révèlent ces indices?.<br><b>Écrivez ici votre mot final :</b></div>
+                <input type="text" id="burned-input" placeholder="Votre réponse">
+            </div>
+            <img id="map-img" src="map1.png" alt="Carte">
+        </div>
+
+        <div class="tab-content" id="conseil" style="display:none;">
+            <p>L'entraide vous sauvera</p>
+            <p>Ensemble les saints viendront à vous</p>
+            <img src="bellevignestyle.png" alt="Bellevigne" style="max-width: 300px;">
+        </div>
+
+        <div class="tab-content" id="forum" style="display:none;">
+            <h2>Forum</h2>
+            <div id="forum-messages"></div>
+        </div>
+
+        <div class="tab-content" id="secret" style="display:none;">
+            <p>Vous avez reçu le message encrypté, pas de chance. Décryptez-le, et obtenez la récompense.</p>
+            <div>
+                <p>Vite trouve la clé, pour en apprendre plus sur la méthode d'encryptage :</p>
+                <input type="text" id="emma-question" placeholder="Combien de fois Emma a-t-elle pleuré en lisant ce livre ?">
+                <button onclick="checkEmma()">Vérifier</button>
+                <div id="emma-answer" class="hidden">
+                    <a href="https://www.dcode.fr/chiffre-vigenere#q2" target="_blank" style="color:cyan;">Lien vers dcode.fr</a>
+                </div>
+            </div>
+
+            <div style="margin-top:20px;">
+                <p>Combien de personnes étaient présentes au pique-nique surprise de Julia ?</p>
+                <input type="text" id="julia-question" placeholder="Votre réponse">
+                <button onclick="checkJulia()">Vérifier</button>
+                <div id="julia-answer" class="hidden">
+                    <p>Type d'Alphabet: Alphabet Latin</p>
+                    <p>Coordonnée de la clé : 45.55316415722526, -0.14191224458105708</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let username = '';
+        let forumMessages = [];
+
+        function startGame() {
+            const nameInput = document.getElementById('username').value.trim();
+            if (nameInput) {
+                username = nameInput;
+                document.getElementById('identification-screen').classList.add('hidden');
+                document.getElementById('initial-screen').classList.remove('hidden');
+            }
+        }
+
+        function updateForum(message) {
+            forumMessages.push(message);
+            const forumDiv = document.getElementById('forum-messages');
+            forumDiv.innerHTML = forumMessages.map(msg => `<p>${msg}</p>`).join('');
+        }
+
+        function checkResponse() {
+            const response = document.getElementById('response').value.toLowerCase().trim();
+            if (response === 'écho' || response === 'echo' || response === 'un echo' || response === 'un écho') {
+                updateForum(`<b>${username}</b> a répondu <i>"${response}"</i> à l'énigme "Écho".`);
+                document.getElementById('initial-screen').classList.add('hidden');
+                document.getElementById('main-content').classList.remove('hidden');
+                showTab('consigne');
+            } else {
+                const errorMessage = document.getElementById('error-message');
+                errorMessage.classList.remove('hidden');
+                setTimeout(() => errorMessage.classList.add('hidden'), 1000);
+                // Affiche erreur image
+                const img = document.createElement('img');
+                img.src = 'ben.png';
+                img.style.position = 'fixed';
+                img.style.top = '50%';
+                img.style.left = '50%';
+                img.style.transform = 'translate(-50%, -50%)';
+                img.style.width = '300px';
+                img.style.zIndex = '1000';
+                document.body.appendChild(img);
+                const erreurText = document.createElement('div');
+                erreurText.innerText = 'ERREUR';
+                erreurText.style.position = 'fixed';
+                erreurText.style.top = '40%';
+                erreurText.style.left = '50%';
+                erreurText.style.transform = 'translate(-50%, -50%)';
+                erreurText.style.color = 'red';
+                erreurText.style.fontSize = '2em';
+                erreurText.style.zIndex = '1001';
+                document.body.appendChild(erreurText);
+                setTimeout(() => {
+                    document.body.removeChild(img);
+                    document.body.removeChild(erreurText);
+                }, 150);
+            }
+        }
+
+        function showTab(tabId) {
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.style.display = 'none');
+            document.getElementById(tabId).style.display = 'block';
+        }
+
+        document.getElementById('burned-input').addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                checkBurnedInput();
+            }
+        });
+
+        function checkBurnedInput() {
+            const value = document.getElementById('burned-input').value.toLowerCase().trim();
+            updateForum(`<b>${username}</b> a proposé <i>"${value}"</i> pour le mot final.`);
+            if (value === 'club') {
+                document.getElementById('secret-tab').classList.remove('hidden');
+                showTab('secret');
+            }
+        }
+
+        function checkEmma() {
+            const answer = document.getElementById('emma-question').value.trim();
+            updateForum(`<b>${username}</b> a répondu <i>"${answer}"</i> à la question sur Emma.`);
+            if (answer === '5') {
+                document.getElementById('emma-answer').classList.remove('hidden');
+            }
+        }
+
+        function checkJulia() {
+            const answer = document.getElementById('julia-question').value.toLowerCase().trim();
+            updateForum(`<b>${username}</b> a répondu <i>"${answer}"</i> à la question sur Julia.`);
+            if (answer === '12') {
+                document.getElementById('julia-answer').classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
