@@ -11,6 +11,7 @@
             margin: 0;
             text-align: center;
             height: 100vh;
+            overflow: hidden;
         }
         h1 {
             font-size: 1.5em;
@@ -45,9 +46,10 @@
             display: flex;
             justify-content: center;
             margin-top: 20px;
+            flex-wrap: wrap;
         }
         .tab {
-            margin: 0 10px;
+            margin: 5px;
             padding: 10px;
             background-color: #222;
             border-radius: 5px;
@@ -55,30 +57,39 @@
         }
         .tab-content {
             margin-top: 20px;
-        }
-        #map-img {
-            width: 90%;
-            height: auto;
             position: relative;
+        }
+        #carte {
+            height: 90vh;
+            background: url('map1.png') no-repeat center center;
+            background-size: cover;
+            position: relative;
+            overflow: hidden;
         }
         #burned-spot {
             position: absolute;
-            top: 10px;
-            left: 10px;
-            width: 250px;
-            height: 100px;
-            background-color: black;
+            top: 10%;
+            left: 5%;
+            width: 90%;
+            max-width: 400px;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
             color: white;
+            border-radius: 10px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            padding: 5px;
-            border-radius: 10px;
+            z-index: 2;
         }
         #burned-spot input {
-            margin-top: 5px;
-            width: 80%;
+            margin-top: 10px;
+            width: 90%;
+            padding: 10px;
+            font-size: 1em;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
         }
     </style>
 </head>
@@ -103,17 +114,17 @@
         </div>
 
         <div class="tab-content" id="consigne" style="display:none;">
-            <p>i. Vous trouverez à chaque localisation mentionnée sur le plan, un papier avec des symboles comme ceux-ci:</p>
+            <p>i. Vous trouverez à chaque localisation mentionnée sur le plan, un papier avec des symboles comme ceux-ci :</p>
             <img src="clé.png" alt="Clé" style="max-width: 300px;"><br>
             <p>iii. Dans chacun d'eux figure une lettre cryptée du mot final.</p>
         </div>
 
-        <div class="tab-content" id="carte" style="display:none; position: relative;">
+        <div class="tab-content" id="carte" style="display:none;">
             <div id="burned-spot">
-                <div>La carte a brûlé,<br>Écrivez ici:</div>
+                <p><strong>La carte est brûlée !</strong></p>
+                <p>Écrivez ici le mot final trouvé pour me réparer :</p>
                 <input type="text" id="burned-input" placeholder="Votre réponse">
             </div>
-            <img id="map-img" src="map1.png" alt="Carte">
         </div>
 
         <div class="tab-content" id="conseil" style="display:none;">
