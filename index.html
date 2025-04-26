@@ -123,7 +123,7 @@
     <p>Vous avez reçu le message encrypté, pas de chance. Décryptez-le, et obtenez la récompense.</p>
 
     <div>
-        <p>Quelle est la spécialité préférée de Julia ?</p>
+        <p>Combien y avait-il de personne à la crémaillière de Julia?</p>
         <input type="text" id="julia-question" placeholder="Votre réponse">
         <button onclick="checkJulia()">Vérifier</button>
         <div id="julia-answer" class="hidden">
@@ -133,7 +133,7 @@
     </div>
 
     <div style="margin-top:20px;">
-        <p>Combien d'enfants Emma a-t-elle ?</p>
+        <p>Combien de fois Emma s'est-elle remis avec Alex ?</p>
         <input type="text" id="emma-question" placeholder="Votre réponse">
         <button onclick="checkEmma()">Vérifier</button>
         <div id="emma-answer" class="hidden">
@@ -203,8 +203,8 @@
         }
 
         function checkJulia() {
-            const answer = document.getElementById('julia-question').value.toLowerCase().trim();
-            if (answer === 'sushis' || answer === 'sushi') {
+            const answer = document.getElementById('emma-question').value.trim();
+            if (answer === '1') {
                 document.getElementById('julia-answer').classList.remove('hidden');
             } else {
                 showError();
